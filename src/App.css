@@ -2145,6 +2145,8 @@ justify-content: center;
 
 .toggle-button-group {
   margin: 10px 0px;
+  display: flex;
+  justify-content: space-evenly;
 }
 
 .toggle-button-group button {
@@ -2306,4 +2308,22 @@ margin: 10px 0px;
   text-align: center;
   color: var(--color-detalles2);
   font-weight: 700;
+}
+
+.build-list {
+  color: var(--color-texto);
+  margin: 10px 0px;
+}
+
+.delete-builds-table tr :nth-child(3) {
+text-align: center !important;
+}
+
+.delete-builds-table th {
+  color: white !important;
+  background-color: #534b36 !important;
+  }
+
+.marked-for-deletion {
+    text-decoration: line-through !important;
 }

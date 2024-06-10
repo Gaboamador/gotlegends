@@ -25,8 +25,16 @@ useEffect(() => {
     try {
       const { builds } = await fetchData();
       if (builds && Array.isArray(builds)) {
-        setBuilds(builds);
-        setFilteredBuilds(builds);
+            // Sort builds by class and then by name
+    const sortedBuilds = builds.sort((a, b) => {
+      if (a.class < b.class) return -1;
+      if (a.class > b.class) return 1;
+      if (a.name < b.name) return -1;
+      if (a.name > b.name) return 1;
+      return 0;
+    });
+        setBuilds(sortedBuilds);
+        setFilteredBuilds(sortedBuilds);
       } else {
       console.error('Invalid data format:', builds);
       }
@@ -149,10 +157,15 @@ const properties = Object.keys(builds[0]).filter(prop => prop !== 'name');
     </Link>
   ))}
 </Container> */}
-<Container className="d-flex justify-content-center toggle-button-group">
+<Container className="toggle-button-group">
 <Link to="/BuildCreator">                
 <Button className="custom-button">
 Add Build
+</Button>
+</Link>
+<Link to="/BuildList">                
+<Button className="custom-button">
+        Build List (Delete)
 </Button>
 </Link>
 </Container>

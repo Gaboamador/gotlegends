@@ -8,7 +8,30 @@ const BRANCH = 'main'; // The branch you want to update
 
 // You need to set your GitHub personal access token as an environment variable
 // const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-const GITHUB_TOKEN = process.env.REACT_APP_GITHUB_TOKEN;
+// const GITHUB_TOKEN = process.env.REACT_APP_GITHUB_TOKEN;
+
+let GITHUB_TOKEN = ''; // Initialize the token variable
+
+// Function to set the GitHub token
+export const setGitHubToken = async () => {
+  const token = prompt('Enter your GitHub token:');
+  if (token) {
+    GITHUB_TOKEN = token;
+    localStorage.setItem('github_token', token); // Save token to local storage
+  } else {
+      throw new Error('GitHub token is required.');
+  }
+};
+
+// Function to get the GitHub token from local storage or prompt the user
+export const getGitHubToken = () => {
+  const token = localStorage.getItem('github_token');
+  if (token) {
+    GITHUB_TOKEN = token;
+  } else {
+    setGitHubToken();
+  }
+};
 
 export const fetchData = async () => {
     try {
@@ -26,6 +49,11 @@ export const fetchData = async () => {
 
   export const pushData = async (newBuild) => {
     try {
+ 
+      // Set the GitHub token
+      // await setGitHubToken();
+      await getGitHubToken();
+
       // Fetch the current file data
       const response = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${FILE_PATH}`, {
         headers: {
@@ -66,5 +94,51 @@ export const fetchData = async () => {
   } catch (error) {
     console.error('Error pushing data:', error);
     throw error;
+  }
+};
+
+//funciona solo para pushear lista de builds sin los que se quieren borrar
+export const pushDataDeleteBuilds = async (updatedBuilds) => {
+  try {
+      // Set the GitHub token
+      // await setGitHubToken();
+      await getGitHubToken();
+
+      // Encode the updated builds array
+      const updatedContent = btoa(JSON.stringify(updatedBuilds, null, 2));
+
+      // Fetch the current file data
+      const response = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${FILE_PATH}`, {
+          headers: {
+              'Authorization': `Bearer ${GITHUB_TOKEN}`,
+              'Accept': 'application/vnd.github.v3+json'
+          }
+      });
+
+      const fileData = await response.json();
+
+      // Update the file on GitHub
+      const updateResponse = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${FILE_PATH}`, {
+          method: 'PUT',
+          headers: {
+              'Authorization': `Bearer ${GITHUB_TOKEN}`,
+              'Accept': 'application/vnd.github.v3+json'
+          },
+          body: JSON.stringify({
+              message: 'Update builds.json',
+              content: updatedContent,
+              sha: fileData.sha,
+              branch: BRANCH
+          })
+      });
+
+      if (!updateResponse.ok) {
+          throw new Error(`Error updating file: ${updateResponse.statusText}`);
+      }
+
+      console.log('File updated successfully');
+  } catch (error) {
+      console.error('Error pushing data:', error);
+      throw error;
   }
 };

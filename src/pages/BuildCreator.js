@@ -8,10 +8,15 @@ const BuildCreator = () => {
   return (
     <div className="content">
 
-<Container className="d-flex justify-content-center toggle-button-group">
+<Container className="toggle-button-group">
 <Link to="/">                
 <Button className="custom-button">
         Browse Builds
+</Button>
+</Link>
+<Link to="/BuildList">                
+<Button className="custom-button">
+        Build List (Delete)
 </Button>
 </Link>
 </Container>

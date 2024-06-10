@@ -307,7 +307,7 @@ const BuildForm = () => {
         {renderFormSelect('Perk I', 'gw2_perk1', gw2PerkOptions, 'perks')}
         {renderFormSelect('Perk II', 'gw2_perk2', gw2PerkOptions, 'perks')}
         
-        <Container className="d-flex justify-content-end toggle-button-group">
+        <Container className="d-flex justify-content-center toggle-button-group">
             <Button type="submit" className="custom-button">
             Add Build
             </Button>
