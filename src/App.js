@@ -1,25 +1,32 @@
-import logo from './logo.svg';
+import React from "react";
 import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { HashRouter as Router, Route, Routes } from 'react-router-dom';
+// import GlobalState from "./globalState";
+import Header from "./componentes/Header";
+import Home from './pages/Home';
+import BuildCreator from './pages/BuildCreator'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
-
+function App() {  
+return (
+  <div className="GeneralFont">
+    <Router>
+    {/* <GlobalState> */}
+      <Header/>
+      <Routes>
+          <Route exact path="/" element={<Home/>}></Route>
+          <Route path="/BuildCreator" element={<BuildCreator/>}></Route>
+          {/* <Route path="/VotacionesPorJugador" element={<VotacionesPorJugador/>}></Route>
+          <Route path="/VotacionesPorSemana" element={<VotacionesPorSemana/>}></Route>
+          <Route path="/ListadoLideres" element={<ListadoLideres/>}></Route>
+          <Route path="/ListadoEliminados" element={<ListadoEliminados/>}></Route>
+          <Route path="/PlacasPorSemana" element={<PlacasPorSemana/>}></Route>
+          <Route path="/PlacasEnContinuado" element={<PlacasEnContinuado/>}></Route>
+          <Route path="/GraficosNominaciones" element={<GraficosNominaciones/>}></Route> */}
+        </Routes>
+        {/* </GlobalState> */}
+    </Router>
+  </div>
+);
+}  
 export default App;
