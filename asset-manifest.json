@@ -1,15 +1,16 @@
 {
   "files": {
-    "main.css": "/gotlegends/static/css/main.cb96405b.css",
-    "main.js": "/gotlegends/static/js/main.28af227c.js",
+    "main.css": "/gotlegends/static/css/main.a5717a3d.css",
+    "main.js": "/gotlegends/static/js/main.732cfcb9.js",
     "static/js/453.3cd39940.chunk.js": "/gotlegends/static/js/453.3cd39940.chunk.js",
+    "static/media/buttonLogo.png": "/gotlegends/static/media/buttonLogo.ac66ea3616567259d388.png",
     "index.html": "/gotlegends/index.html",
-    "main.cb96405b.css.map": "/gotlegends/static/css/main.cb96405b.css.map",
-    "main.28af227c.js.map": "/gotlegends/static/js/main.28af227c.js.map",
+    "main.a5717a3d.css.map": "/gotlegends/static/css/main.a5717a3d.css.map",
+    "main.732cfcb9.js.map": "/gotlegends/static/js/main.732cfcb9.js.map",
     "453.3cd39940.chunk.js.map": "/gotlegends/static/js/453.3cd39940.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.cb96405b.css",
-    "static/js/main.28af227c.js"
+    "static/css/main.a5717a3d.css",
+    "static/js/main.732cfcb9.js"
   ]
 }
