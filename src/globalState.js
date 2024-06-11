@@ -4,8 +4,10 @@ import {useState} from 'react'
 
 function GlobalState(props){
 
-  const [token, setToken]=useState('')
-  
+  const [selectedBuild, setSelectedBuild]=useState('')
+  const [selectedClass, setSelectedClass]=useState('All')
+  const [marker, setMarker]=useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const root = document.documentElement;
   
     const paleta = {
@@ -24,8 +26,14 @@ function GlobalState(props){
   return (
     <Context.Provider value={{
       paleta:paleta,
-      token:token,
-      setToken:setToken,
+      selectedBuild:selectedBuild,
+      setSelectedBuild:setSelectedBuild,
+      selectedClass:selectedClass,
+      setSelectedClass:setSelectedClass,
+      marker:marker,
+      setMarker:setMarker,
+      sidebarOpen:sidebarOpen,
+      setSidebarOpen:setSidebarOpen,
     }}>
         {props.children}
     </Context.Provider>

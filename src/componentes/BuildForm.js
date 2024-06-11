@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { pushData } from '../componentes/DataService';
+import { pushData } from './DataService';
 import {Container, Image, Table, Button, ButtonGroup, ButtonToolbar } from 'react-bootstrap';
 import items from '../data/data';
 
@@ -278,9 +278,9 @@ const BuildForm = () => {
   )}
         </div>
         {renderFormSelect('Ability', 'ability', abilityOptions, classTechOptions[formState.class.toLowerCase()])}
-        {renderFormSelect('Technique 1', 'perk1', perk1Options, classTechOptions[formState.class.toLowerCase()])}
-        {renderFormSelect('Technique 2', 'perk2', perk2Options, classTechOptions[formState.class.toLowerCase()])}
-        {renderFormSelect('Technique 3', 'perk3', perk3Options, classTechOptions[formState.class.toLowerCase()])}
+        {renderFormSelect('Perk 1', 'perk1', perk1Options, classTechOptions[formState.class.toLowerCase()])}
+        {renderFormSelect('Perk 2', 'perk2', perk2Options, classTechOptions[formState.class.toLowerCase()])}
+        {renderFormSelect('Perk 3', 'perk3', perk3Options, classTechOptions[formState.class.toLowerCase()])}
         {renderFormSelect('KATANA', 'katana', katanaOptions, 'katana')}
         {renderFormSelect('Prop I', 'katana_prop1', katanaPropertyOptions, 'props')}
         {renderFormSelect('Prop II', 'katana_prop2', katanaPropertyOptions, 'props')}

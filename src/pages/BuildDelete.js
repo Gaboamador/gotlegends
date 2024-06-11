@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { fetchData, pushDataDeleteBuilds } from '../componentes/DataService';
 import { Link } from 'react-router-dom';
-import {Container, Image, Table, Button, ButtonGroup, ButtonToolbar } from 'react-bootstrap';
+import {Container, Image, Table, Button, ButtonGroup, ButtonToolbar, ListGroup } from 'react-bootstrap';
 
-const BuildList = () => {
+const BuildDelete = () => {
     const [builds, setBuilds] = useState([]);
     const [selectedBuilds, setSelectedBuilds] = useState([]);
 
@@ -71,12 +71,11 @@ const BuildList = () => {
         return 0;
       });
 
-
     return (
         <div className="content">
 
-<Container className="toggle-button-group">
-<Link to="/">                
+{/* <Container className="toggle-button-group">
+<Link to="/BuildBrowser">                
 <Button className="custom-button">
 Browse Builds
 </Button>
@@ -86,7 +85,7 @@ Browse Builds
 Add Build
 </Button>
 </Link>
-</Container>
+</Container> */}
 
 <Container>
 <h1 className="build-creator-title">EXISTING BUILDS</h1>
@@ -123,26 +122,20 @@ Add Build
    </tbody>
    </Table>
 
-   {/* <Container>
-    <span>Marked for deletion</span>
-    <Table striped bordered hover className="delete-builds-table">
-    <thead>
-            <tr>
-              <th>BUILD NAME</th>
-              <th>CLASS</th>
-            </tr>
-          </thead>
-          <tbody>
-   {selectedBuilds.map((build, index) => (
-    <tr key={build.id || index} className={selectedBuilds.includes(build) ? 'marked-for-deletion' : ''}>
-    <td>{build.name}</td>
-    <td>{build.class}</td>
-  </tr>
-  ))}
-    </tbody>
-    </Table>
-   </Container> */}
+   {selectedBuilds.length >=1 && 
+   <Container>
+    <div className="subtitle-word">Marked for deletion</div>
+    <ListGroup>
+            {selectedBuilds.map((build, index) => (
+              <ListGroup.Item key={build.id || index}>
+                {build.name} / Class: {build.class}
+              </ListGroup.Item>
+            ))}
+          </ListGroup>
+  
 
+   </Container>
+  }
 
 <Container className="d-flex justify-content-center toggle-button-group">
 <Button className="custom-button" onClick={handleDelete}>Delete Selected Builds</Button>
@@ -155,4 +148,4 @@ Add Build
     );
 };
 
-export default BuildList;
+export default BuildDelete;

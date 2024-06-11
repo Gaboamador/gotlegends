@@ -6,7 +6,9 @@ import GlobalState from "./globalState";
 import Header from "./componentes/Header";
 import Home from './pages/Home';
 import BuildCreator from './pages/BuildCreator'
-import BuildList from "./pages/BuildList";
+import BuildDelete from "./pages/BuildDelete";
+import BuildBrowser from "./pages/BuildBrowser";
+
 
 function App() {  
 return (
@@ -17,7 +19,8 @@ return (
       <Routes>
           <Route exact path="/" element={<Home/>}></Route>
           <Route path="/BuildCreator" element={<BuildCreator/>}></Route>
-          <Route path="/BuildList" element={<BuildList/>}></Route>
+          <Route path="/BuildDelete" element={<BuildDelete/>}></Route>
+          <Route path="/BuildBrowser" element={<BuildBrowser/>}></Route>
           {/* <Route path="/VotacionesPorJugador" element={<VotacionesPorJugador/>}></Route>
           <Route path="/VotacionesPorSemana" element={<VotacionesPorSemana/>}></Route>
           <Route path="/ListadoLideres" element={<ListadoLideres/>}></Route>
