@@ -335,11 +335,12 @@ return (
     </ul>
     
     {/* <footer className="navMenuFooter"> */}
-    <footer className={`navMenuFooter ${sidebarOpen ? 'active' : ''}`}>
+    
+    {/* <footer className={`navMenuFooter ${sidebarOpen ? 'active' : ''}`}>
     <div className="logoFooter">
-      {/* <img src={ghFooter} alt={""} className="footerImgSize"/> */}
+      <img src={ghFooter} alt={""} className="footerImgSize"/>
     </div>
-    </footer>
+    </footer> */}
   </div>
     
   <div className="d-flex justify-content-between align-items-center w-100 header-padding">
