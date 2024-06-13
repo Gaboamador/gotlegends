@@ -1,0 +1,18 @@
+<svg id="Component_253_1" data-name="Component 253 – 1" xmlns="http://www.w3.org/2000/svg" width="342.24" height="342.24" viewBox="0 0 342.24 342.24">
+  <g id="Component_230_10" data-name="Component 230 – 10">
+    <g id="Rectangle_3295" data-name="Rectangle 3295" transform="translate(171.12) rotate(45)" fill="#fff" stroke="#000" stroke-width="3">
+      <rect width="242" height="242" stroke="none"/>
+      <rect x="1.5" y="1.5" width="239" height="239" fill="none"/>
+    </g>
+    <g id="Rectangle_3296" data-name="Rectangle 3296" transform="translate(171.421 30) rotate(45)" stroke="#000" stroke-width="3">
+      <rect width="200" height="200" stroke="none"/>
+      <rect x="1.5" y="1.5" width="197" height="197" fill="none"/>
+    </g>
+  </g>
+  <g id="Group_271" data-name="Group 271" transform="translate(20.349 19.84)">
+    <path id="Path_4003" data-name="Path 4003" d="M113.94,69.66c-5.76,2.56-32.77,15.3-44.29,45.95-10.58,28.14-4.05,60.65,16.61,84.7q27.12-44.565,54.25-89.13-13.29-20.76-26.57-41.52Z" fill="#fff"/>
+    <path id="Path_4004" data-name="Path 4004" d="M188.12,74.09a96.117,96.117,0,0,0-40.41-18.82c-2.46-.48-4.86-.84-7.2-1.11q3.6,23.535,7.2,47.06,20.205-13.56,40.41-27.13Z" fill="#fff"/>
+    <path id="Path_4005" data-name="Path 4005" d="M93.46,226.88a56.878,56.878,0,0,0,9.41,8.86c21.93,16.29,54.8,17.25,79.72,4.43a79.793,79.793,0,0,0,30.45-28.23q-33.5-40.965-66.98-81.93-26.295,48.435-52.59,96.88Z" fill="#fff"/>
+    <path id="Path_4006" data-name="Path 4006" d="M233.94,135.32c-8.05-24.32-33.11-51.7-44.03-47.51a6.056,6.056,0,0,0-1.36.74q-12,15.15-24.01,30.29l52.98,94.68c4.87-6.99,28.34-42.17,16.42-78.21Zm-31.21-3.26v1.67h-1.82v-1.67l-1.74-8.16,3.56,6.41v1.74Zm16.73-17.57-4.81,7.32v8.5l-5.02,3.42,8.36-24.88,1.46,1.46v4.18Zm10.04,42.24L224.9,163s-1.46-3.14-1.05-3.97,5.65-6.48,5.65-6.48v4.18Z" fill="#fff"/>
+  </g>
+</svg>
