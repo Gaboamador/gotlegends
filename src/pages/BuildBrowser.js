@@ -16,6 +16,8 @@ const BuildBrowser = () => {
 
 const context = useContext(Context)
 
+
+
 // /*inicio llamado de datos automaticos*/
 const [builds, setBuilds] = useState([]);
 const [filteredBuilds, setFilteredBuilds] = useState([]);
@@ -48,6 +50,9 @@ useEffect(() => {
 
   fetchDataFromAPI();
 }, []);
+
+
+
 
 const [hiddenColumns, setHiddenColumns] = useState([]);
 
@@ -137,6 +142,19 @@ const handleClassFilter = (className) => {
     gw2_perk1: "PERK 1",
     gw2_perk2: "PERK 2"
   };
+  
+  // useEffect to open selected class/build if coming from Home
+  useEffect(() => {
+    if (context.marker && builds && Array.isArray(builds)) {
+    handleClassFilter(context.selectedClass)
+    }
+
+    if (context.marker && context.selectedBuild && builds && Array.isArray(builds)) {
+      handleHeaderClick(context.selectedBuild)
+      }
+    
+
+  }, [builds]);
 
   // Check if builds has data before proceeding
   if (builds.length === 0) {

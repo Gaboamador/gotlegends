@@ -85,7 +85,7 @@ import KenjisSharedBrew from '../images/gear/kenjis-shared-brew.svg';
 import Kunai from '../images/gear/kunai.svg';
 import LadySanjosSurprise from '../images/gear/lady-sanjos-surprise.svg';
 import LastBreathCharm from '../images/gear/last-breath-charm.svg';
-import LongBow from '../images/gear/long-bow.svg';
+import Longbow from '../images/gear/long-bow.svg';
 import MagmaBomb from '../images/gear/magma-bomb.svg';
 import MasamunesEdgeKatana from '../images/gear/masamunes-edge-katana.svg';
 import MastersKatana from '../images/gear/masters-katana.svg';
@@ -190,7 +190,7 @@ export const techniquesToImage = {
   'Bomb Pack': BombPack,
   'Bottle of Liquid Courage': BottleOfLiquidCourage,
   'Caltrops': Caltrops,
-  'Defense': DefenseCharm,
+  'Defense Charm': DefenseCharm,
   'Demon Cutter': DemonCutterKatana,
   'Demon Seeds': DemonSeeds,
   'Dirt Throw': DirtThrow,
@@ -205,7 +205,7 @@ export const techniquesToImage = {
   'Kunai': Kunai,
   'Lady Sanjo\'s Surprise': LadySanjosSurprise,
   'Last Breath': LastBreathCharm,
-  'Long Bow': LongBow,
+  'Longbow': Longbow,
   'Magma Bomb': MagmaBomb,
   'Masamune\'s Edge': MasamunesEdgeKatana,
   'Master\'s Katana': MastersKatana,

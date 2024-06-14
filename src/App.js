@@ -1,6 +1,7 @@
 import React from "react";
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import $ from 'jquery'
 import { HashRouter as Router, Route, Routes } from 'react-router-dom';
 import GlobalState from "./globalState";
 import Header from "./componentes/Header";
@@ -8,10 +9,29 @@ import Home from './pages/Home';
 import BuildCreator from './pages/BuildCreator'
 import BuildDelete from "./pages/BuildDelete";
 import BuildBrowser from "./pages/BuildBrowser";
-
+import { BsChevronUp } from "react-icons/bs";
 
 function App() {  
-return (
+
+  $(document).ready(function(){
+
+    $('.ir-arriba').click(function(){
+      $('body, html').animate({
+        scrollTop: '0px'
+      }, 300);
+    });
+
+    $(window).scroll(function(){
+      if( $(this).scrollTop() > 0 ){
+        $('.ir-arriba').slideDown(300);
+      } else {
+        $('.ir-arriba').slideUp(300);
+      }
+    });
+
+  });
+
+  return (
   <div className="GeneralFont">
     <Router>
     <GlobalState>
@@ -29,6 +49,9 @@ return (
           <Route path="/PlacasEnContinuado" element={<PlacasEnContinuado/>}></Route>
           <Route path="/GraficosNominaciones" element={<GraficosNominaciones/>}></Route> */}
         </Routes>
+        <span className="ir-arriba icon-arrow-up2">
+                       <BsChevronUp/>
+                      </span>
         </GlobalState>
     </Router>
   </div>

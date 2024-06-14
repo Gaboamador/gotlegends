@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { pushData } from './DataService';
 import {Container, Image, Table, Button, ButtonGroup, ButtonToolbar } from 'react-bootstrap';
 import items from '../data/data';
+import { techniquesToImage } from '../images/techniquesToImage';
 
 const BuildForm = () => {
     const initialFormState = {
@@ -129,7 +130,11 @@ const BuildForm = () => {
         }) || [];
       };
       
-      
+      const getItemTypeClassName = (property, itemName) => {
+        const item = items[property]?.find(item => item.name === itemName);
+        const itemType = item ? item.type : '';
+        return itemType ? itemType.toLowerCase() : '';
+      };
   
     // const renderFormSelect = (label, name, options) => (
     //   <div className="form-group">
@@ -195,23 +200,57 @@ const BuildForm = () => {
       };
 
 
-    const renderFormSelect = (label, name, options, itemType) => {
+    const renderFormSelect = (label, name, options, itemType, imgType) => {
     
     const selectedItem = options.find(option => option.name === formState[name]);
     const description = selectedItem ? getGearDescription(formState[name], itemType) : '';
       
         return (
           <div className="form-group">
-            <label htmlFor={name} className="form-label">{label}</label>
+            
+            <div className={`${techniquesToImage[formState[name]] ? "form-gear" : ""}`}>
+              <div
+              className={`${imgType === 'square' ? "icon-container" : imgType === 'round' ? "icon-container-round" : ""}`}
+              >
+              {techniquesToImage[formState[name]] &&
+              <img src={techniquesToImage[formState[name]]} alt={formState[name]}
+              className={`${imgType === 'gear' ? "build-image" : "build-image-selected"} ${getItemTypeClassName(itemType, formState[name])} creator`}
+              />
+              }
+              </div>
+              <label htmlFor={name} className={`form-label ${techniquesToImage[formState[name]] ? 'image' : ''}`}>
+              {/* {techniquesToImage[formState[name]] ? label.toUpperCase() : label} */}
+              {label.toUpperCase()}
+                </label>
+            </div>
+
             <select
               id={name}
               name={name}
               value={formState[name]}
               onChange={handleChange}
-              className="form-control"
+              // className={`form-control ${techniquesToImage[formState[name]] ? '' : 'not-image'}`}
+              className={`form-control
+                ${
+                  itemType === 'katana' || itemType === 'ranged' || itemType === 'charm' || itemType === 'gw1' || itemType === 'gw2'
+                  ? 'gear' :
+                  itemType === 'props' ? 'props' :
+                  itemType === 'perks' ? 'perks' : ''
+                }`}
             >
               <option value=""></option>
-              {renderSelectOptions(options)}
+              {/* {itemType === 'perks' ? renderSelectOptions(options).toUpperCase() : renderSelectOptions(options)} */}
+              {/* {itemType === 'perks' ? renderSelectOptions(options).toUpperCase() : renderSelectOptions(options)} */}
+              {/* {renderSelectOptions(options)} */}
+              {itemType === 'perks' ? 
+      renderSelectOptions(options).map((option, index) => (
+        <option key={index} value={option.props.value}>
+          {option.props.children.toUpperCase()}
+        </option>
+      ))
+      : 
+      renderSelectOptions(options)
+    }
             </select>
             {description && (
               <p className="form-description">{description}</p>
@@ -219,7 +258,7 @@ const BuildForm = () => {
           </div>
         );
       };
-      
+
   
     const classes = items.classes;
     const abilityOptions = getOptionsForClass('Ability');
@@ -251,7 +290,7 @@ const BuildForm = () => {
     return (
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label htmlFor="name" className="form-label">Build Name</label>
+          <label htmlFor="name" className="form-label">BUILD NAME</label>
           <input
             type="text"
             id="name"
@@ -261,9 +300,18 @@ const BuildForm = () => {
             className="form-control"
           />
         </div>
-        {renderFormSelect('Class', 'class', classes)}
+        {renderFormSelect('Class', 'class', classes, '', 'gear')}
         <div className="form-group">
-          <label htmlFor="ultimate" className="form-label">Ultimate</label>
+        {techniquesToImage[formState.ultimate] && 
+        <div className="icon-container-round">
+        <img
+            src={techniquesToImage[formState.ultimate]}
+            alt={formState.ultimate}
+            className="build-image-selected"
+          />
+          </div>
+          }
+          <label htmlFor="ultimate" className={`form-label ${techniquesToImage[formState.ultimate] ? 'image' : ''}`}>ULTIMATE</label>
           <input
             type="text"
             id="ultimate"
@@ -277,31 +325,31 @@ const BuildForm = () => {
     <p className="form-description">{getUltimateDescription(formState.ultimate)}</p>
   )}
         </div>
-        {renderFormSelect('Ability', 'ability', abilityOptions, classTechOptions[formState.class.toLowerCase()])}
-        {renderFormSelect('Perk 1', 'perk1', perk1Options, classTechOptions[formState.class.toLowerCase()])}
-        {renderFormSelect('Perk 2', 'perk2', perk2Options, classTechOptions[formState.class.toLowerCase()])}
-        {renderFormSelect('Perk 3', 'perk3', perk3Options, classTechOptions[formState.class.toLowerCase()])}
-        {renderFormSelect('KATANA', 'katana', katanaOptions, 'katana')}
+        {renderFormSelect('Ability', 'ability', abilityOptions, classTechOptions[formState.class.toLowerCase()], 'round')}
+        {renderFormSelect('Perk 1', 'perk1', perk1Options, classTechOptions[formState.class.toLowerCase()], 'square')}
+        {renderFormSelect('Perk 2', 'perk2', perk2Options, classTechOptions[formState.class.toLowerCase()], 'square')}
+        {renderFormSelect('Perk 3', 'perk3', perk3Options, classTechOptions[formState.class.toLowerCase()], 'square')}
+        {renderFormSelect('KATANA', 'katana', katanaOptions, 'katana', 'gear')}
         {renderFormSelect('Prop I', 'katana_prop1', katanaPropertyOptions, 'props')}
         {renderFormSelect('Prop II', 'katana_prop2', katanaPropertyOptions, 'props')}
         {renderFormSelect('Perk I', 'katana_perk1', katanaPerkOptions, 'perks')}
         {renderFormSelect('Perk II', 'katana_perk2', katanaPerkOptions, 'perks')}
-        {renderFormSelect('RANGED', 'ranged', rangedOptions, 'ranged')}
+        {renderFormSelect('RANGED', 'ranged', rangedOptions, 'ranged', 'gear')}
         {renderFormSelect('Prop I', 'ranged_prop1', rangedPropertyOptions, 'props')}
         {renderFormSelect('Prop II', 'ranged_prop2', rangedPropertyOptions, 'props')}
         {renderFormSelect('Perk I', 'ranged_perk1', rangedPerkOptions, 'perks')}
         {renderFormSelect('Perk II', 'ranged_perk2', rangedPerkOptions, 'perks')}
-        {renderFormSelect('CHARM', 'charm', charmOptions, 'charm')}
+        {renderFormSelect('CHARM', 'charm', charmOptions, 'charm', 'gear')}
         {renderFormSelect('Prop I', 'charm_prop1', charmPropertyOptions, 'props')}
         {renderFormSelect('Prop II', 'charm_prop2', charmPropertyOptions, 'props')}
         {renderFormSelect('Perk I', 'charm_perk1', charmPerkOptions, 'perks')}
         {renderFormSelect('Perk II', 'charm_perk2', charmPerkOptions, 'perks')}
-        {renderFormSelect('GHOST WEAPON 1', 'gw1', gw1Options, 'gw1')}
+        {renderFormSelect('GHOST WEAPON 1', 'gw1', gw1Options, 'gw1', 'gear')}
         {renderFormSelect('Prop I', 'gw1_prop1', gw1PropertyOptions, 'props')}
         {renderFormSelect('Prop II', 'gw1_prop2', gw1PropertyOptions, 'props')}
         {renderFormSelect('Perk I', 'gw1_perk1', gw1PerkOptions, 'perks')}
         {renderFormSelect('Perk II', 'gw1_perk2', gw1PerkOptions, 'perks')}
-        {renderFormSelect('GHOST WEAPON 2', 'gw2', gw2Options, 'gw2')}
+        {renderFormSelect('GHOST WEAPON 2', 'gw2', gw2Options, 'gw2', 'gear')}
         {renderFormSelect('Prop I', 'gw2_prop1', gw2PropertyOptions, 'props')}
         {renderFormSelect('Prop II', 'gw2_prop2', gw2PropertyOptions, 'props')}
         {renderFormSelect('Perk I', 'gw2_perk1', gw2PerkOptions, 'perks')}

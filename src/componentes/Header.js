@@ -170,6 +170,7 @@ import { TfiClose } from "react-icons/tfi";
 import Context from "../context";
 import Logo from "./TitleLogo";
 import buttonLogo from '../images/buttonLogo.png'
+import { techniquesToImage } from "../images/techniquesToImage";
 
 
 
@@ -195,6 +196,7 @@ const Header = () => {
     }, []);
   
   const SidebarItem = ({ item, activeSubmenus, toggleSubmenu, closeSidebar, collapseAllSubmenus }) => {
+    
     const isActive = activeSubmenus.includes(item);
     const hasSubmenu = item.submenu && item.submenu.length > 0;
     const hasComponent = item.component;
@@ -231,10 +233,21 @@ const Header = () => {
                     to={subItem.link}
                     className="navLink"
                     onClick={() => {
+                      if (item.desc === 'Classes') {
+                        context.setMarker(true);
+                        context.setSelectedClass(subItem.desc); // Set selected class if item is 'Classes'
+                      }
                       closeSidebar();
                       collapseAllSubmenus();
                     }}
                   >
+                     {item.desc === 'Classes' && techniquesToImage[subItem.desc] && (
+                    <img
+                      src={techniquesToImage[subItem.desc]}
+                      alt={subItem.desc}
+                      style={{ width: '20px', height: '20px', marginRight: '10px' }}
+                    />
+                  )}
                     {subItem.desc}
                   </Link>
                 ) : (

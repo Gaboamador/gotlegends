@@ -1,10 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { fetchData, pushDataDeleteBuilds } from '../componentes/DataService';
 import { Link } from 'react-router-dom';
+import Context from '../context';
 import {Container, Image, Table, Button, ButtonGroup, ButtonToolbar, ListGroup } from 'react-bootstrap';
 
 const BuildDelete = () => {
-    const [builds, setBuilds] = useState([]);
+    
+  const context = useContext(Context)
+  useEffect(() => {
+    context.setMarker(false)
+  }, []);
+
+  const [builds, setBuilds] = useState([]);
     const [selectedBuilds, setSelectedBuilds] = useState([]);
 
     // Fetch existing builds

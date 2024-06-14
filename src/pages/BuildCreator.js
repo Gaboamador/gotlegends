@@ -1,9 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import {Container, Image, Table, Button, ButtonGroup, ButtonToolbar } from 'react-bootstrap';
 import BuildForm from '../componentes/BuildForm';
-
+import Context from "../context";
+  
 const BuildCreator = () => {
+
+  const context = useContext(Context)
+  useEffect(() => {
+    context.setMarker(false)
+  }, []);
 
   return (
     <div className="content">
