@@ -3,6 +3,8 @@ import { pushData } from './DataService';
 import {Container, Image, Table, Button, ButtonGroup, ButtonToolbar } from 'react-bootstrap';
 import items from '../data/data';
 import { techniquesToImage } from '../images/techniquesToImage';
+import TechniquesContainer from './TechniquesContainer';
+
 
 const BuildForm = () => {
     const initialFormState = {
@@ -42,7 +44,8 @@ const BuildForm = () => {
 
     const [formState, setFormState] = useState(initialFormState);
     const [currentClass, setCurrentClass] = useState('');
-  
+    const [lastClicked, setLastClicked] = useState(null);
+
     useEffect(() => {
       if (currentClass) {
         const classKey = `${currentClass.toLowerCase()}Tec`;
@@ -54,6 +57,17 @@ const BuildForm = () => {
       }
     }, [currentClass]);
   
+    const handleTechniquesChange = (slot, techniqueName) => {
+      setFormState(prevState => ({
+        ...prevState,
+        [slot]: techniqueName
+      }));
+    };
+
+    const handleLastClickedChange = (techniqueName) => {
+      setLastClicked(techniqueName);
+    };  
+
     const handleChange = (e) => {
       const { name, value } = e.target;
       setFormState((prevState) => ({
@@ -135,30 +149,6 @@ const BuildForm = () => {
         const itemType = item ? item.type : '';
         return itemType ? itemType.toLowerCase() : '';
       };
-  
-    // const renderFormSelect = (label, name, options) => (
-    //   <div className="form-group">
-    //     <label htmlFor={name} className="form-label">{label}</label>
-    //     <select
-    //       id={name}
-    //       name={name}
-    //       value={formState[name]}
-    //       onChange={handleChange}
-    //       className="form-control"
-    //     >
-    //       <option value=""></option>
-    //       {renderSelectOptions(options)}
-    //     </select>
-    //     {formState[name] && options.find(option => option.name === formState[name])?.description && (
-    //   <p className="form-description">{options.find(option => option.name === formState[name]).description}</p>
-    // )}
-    //   </div>
-    // );
-
-    // const getGearDescription = (itemName, itemType) => {
-    //     const item = items[itemType].find(item => item.name === itemName);
-    //     return item ? item.description : '';
-    //   };
 
     const getUltimateDescription = (ultimateName) => {
         for (const key in items) {
@@ -200,66 +190,202 @@ const BuildForm = () => {
       };
 
 
-    const renderFormSelect = (label, name, options, itemType, imgType) => {
-    
-    const selectedItem = options.find(option => option.name === formState[name]);
-    const description = selectedItem ? getGearDescription(formState[name], itemType) : '';
-      
+      const ToggleButtonGroup = ({ options, selectedValue, onChange }) => {
         return (
-          <div className="form-group">
-            
-            <div className={`${techniquesToImage[formState[name]] ? "form-gear" : ""}`}>
-              <div
-              className={`${imgType === 'square' ? "icon-container" : imgType === 'round' ? "icon-container-round" : ""}`}
-              >
-              {techniquesToImage[formState[name]] &&
-              <img src={techniquesToImage[formState[name]]} alt={formState[name]}
-              className={`${imgType === 'gear' ? "build-image" : "build-image-selected"} ${getItemTypeClassName(itemType, formState[name])} creator`}
+          <ButtonGroup toggle className="d-flex justify-content-center toggle-button-group-creator build-title">
+          {options.map((option, index) => (
+            <Button
+              key={index}
+              active={selectedValue === option}
+              onClick={() => onChange(option)}
+              className="toggle-button"
+            >
+              <img
+                src={techniquesToImage[option]}
+                alt={option}
+                className="toggle-button-image"
               />
-              }
-              </div>
-              <label htmlFor={name} className={`form-label ${techniquesToImage[formState[name]] ? 'image' : ''}`}>
-              {/* {techniquesToImage[formState[name]] ? label.toUpperCase() : label} */}
-              {label.toUpperCase()}
-                </label>
-            </div>
+              {/* {option} */}
+              {selectedValue === option && <div className="toggle-button-text">{option}</div>}
+            </Button>
+          ))}
+        </ButtonGroup>
+        );
+      };
 
+    const renderFormSelect = (label, name, options, itemType, imgType) => {
+      const selectedItem = options.find(option => option.name === formState[name]);
+      const description = selectedItem ? getGearDescription(formState[name], itemType) : '';
+      
+      const handleToggleChange = (value) => {
+        handleChange({ target: { name, value } });
+      };
+      
+      return (
+        <div className="form-group">
+
+          {/* ITEM LABEL */}
+          <label htmlFor={name} className={`form-label ${techniquesToImage[formState[name]] && label !== 'Class' && itemType !== 'perks' ? '' : ''} ${imgType === 'gear' ? 'gear-label' : ''}`}>
+              {label.toUpperCase()}
+            </label>
+
+<div className="form-container">
+          {/* ITEM IMAGE */}
+            {techniquesToImage[formState[name]] &&
+          <div className={`${techniquesToImage[formState[name]] ? "form-gear" : ""}`}>
+            <div className={`${imgType === 'square' ? "icon-container" : imgType === 'round' ? "icon-container-round" : ""}`}>
+              {techniquesToImage[formState[name]] && label!== 'Class' && itemType !== 'perks' &&
+                <img src={techniquesToImage[formState[name]]} alt={formState[name]}
+                  className={`${imgType === 'gear' ? "build-image" : "build-image-selected"} ${getItemTypeClassName(itemType, formState[name])} creator`}
+                />
+              }
+            </div>
+            {/* {label !== 'Class' &&
+            <label htmlFor={name} className={`form-label ${techniquesToImage[formState[name]] && label !== 'Class' && itemType !== 'perks' ? 'image' : ''}`}>
+              {[formState[name]]}
+            </label>
+            } */}
+                </div>
+          }
+            
+            {label !== 'Class' &&
+            <select
+            id={name}
+            name={name}
+            value={formState[name]}
+            onChange={handleChange}
+            className={`form-control
+              ${itemType === 'katana' || itemType === 'ranged' || itemType === 'charm' || itemType === 'gw1' || itemType === 'gw2' ? 'gear' :
+                itemType === 'props' ? 'props' :
+                  itemType === 'perks' ? 'perks' : ''}`}
+          >
+            <option value=""></option>
+            {itemType === 'perks' ?
+              renderSelectOptions(options).map((option, index) => (
+                <option key={index} value={option.props.value}>
+                  {option.props.children.toUpperCase()}
+                </option>
+              ))
+              :
+              renderSelectOptions(options)
+            }
+          </select>
+          }
+</div>           
+          {/* </div>
+          } */}
+
+          {/* FORM SELECT (EXCEPT TOGGLE BUTTON FOR CLASS) */}
+          {label === 'Class' &&
+          //  ? (
+            <ToggleButtonGroup
+              options={options.map(option => option.name)}
+              selectedValue={formState[name]}
+              onChange={handleToggleChange}
+            />
+          // ) : (
+            // <select
+            //   id={name}
+            //   name={name}
+            //   value={formState[name]}
+            //   onChange={handleChange}
+            //   className={`form-control
+            //     ${itemType === 'katana' || itemType === 'ranged' || itemType === 'charm' || itemType === 'gw1' || itemType === 'gw2' ? 'gear' :
+            //       itemType === 'props' ? 'props' :
+            //         itemType === 'perks' ? 'perks' : ''}`}
+            // >
+            //   <option value=""></option>
+            //   {itemType === 'perks' ?
+            //     renderSelectOptions(options).map((option, index) => (
+            //       <option key={index} value={option.props.value}>
+            //         {option.props.children.toUpperCase()}
+            //       </option>
+            //     ))
+            //     :
+            //     renderSelectOptions(options)
+            //   }
+            // </select>
+          //   null
+          // )
+          }
+    
+          {description && (
+            <p className="form-description">{description}</p>
+          )}
+        </div>
+      );
+    };
+
+
+    const renderFormSelectInfo = (label, name, options, itemType, imgType) => {
+      const selectedItem = options.find(option => option.name === formState[name]);
+      const description = selectedItem ? getGearDescription(formState[name], itemType) : '';
+      
+      const handleToggleChange = (value) => {
+        handleChange({ target: { name, value } });
+      };
+      
+      return (
+        <div className="form-group">
+          <label htmlFor={name} className={`form-label ${techniquesToImage[formState[name]] && label !== 'Class' && itemType !== 'perks' ? '' : ''}`}>
+              {label.toUpperCase()}
+            </label>
+          <div className={`${techniquesToImage[formState[name]] ? "form-gear" : ""}`}>
+            <div className={`${imgType === 'square' ? "icon-container" : imgType === 'round' ? "icon-container-round" : ""}`}>
+              {techniquesToImage[formState[name]] && label!== 'Class' && itemType !== 'perks' &&
+                <img src={techniquesToImage[formState[name]]} alt={formState[name]}
+                  className={`${imgType === 'gear' ? "build-image" : "build-image-selected"} ${getItemTypeClassName(itemType, formState[name])} creator`}
+                />
+              }
+            </div>
+            <label htmlFor={name} className={`form-label ${techniquesToImage[formState[name]] && label !== 'Class' && itemType !== 'perks' ? 'image' : ''}`}>
+              {[formState[name]]}
+            </label>
+          </div>
+    
+          {/* {label === 'Class' ? (
+            <ToggleButtonGroup
+              options={options.map(option => option.name)}
+              selectedValue={formState[name]}
+              onChange={handleToggleChange}
+            />
+          ) : (
             <select
               id={name}
               name={name}
               value={formState[name]}
               onChange={handleChange}
-              // className={`form-control ${techniquesToImage[formState[name]] ? '' : 'not-image'}`}
               className={`form-control
-                ${
-                  itemType === 'katana' || itemType === 'ranged' || itemType === 'charm' || itemType === 'gw1' || itemType === 'gw2'
-                  ? 'gear' :
+                ${itemType === 'katana' || itemType === 'ranged' || itemType === 'charm' || itemType === 'gw1' || itemType === 'gw2' ? 'gear' :
                   itemType === 'props' ? 'props' :
-                  itemType === 'perks' ? 'perks' : ''
-                }`}
+                    itemType === 'perks' ? 'perks' : ''}`}
             >
               <option value=""></option>
-              {/* {itemType === 'perks' ? renderSelectOptions(options).toUpperCase() : renderSelectOptions(options)} */}
-              {/* {itemType === 'perks' ? renderSelectOptions(options).toUpperCase() : renderSelectOptions(options)} */}
-              {/* {renderSelectOptions(options)} */}
-              {itemType === 'perks' ? 
-      renderSelectOptions(options).map((option, index) => (
-        <option key={index} value={option.props.value}>
-          {option.props.children.toUpperCase()}
-        </option>
-      ))
-      : 
-      renderSelectOptions(options)
-    }
+              {itemType === 'perks' ?
+                renderSelectOptions(options).map((option, index) => (
+                  <option key={index} value={option.props.value}>
+                    {option.props.children.toUpperCase()}
+                  </option>
+                ))
+                :
+                renderSelectOptions(options)
+              }
             </select>
-            {description && (
-              <p className="form-description">{description}</p>
-            )}
-          </div>
-        );
-      };
+          )} */}
+    
+          {description && (
+            <p className="form-description">{description}</p>
+          )}
+        </div>
+      );
+    };
 
-  
+    const getImgType = (techniqueName) => {
+      if (formState.ultimate === techniqueName || formState.ability === techniqueName) return 'round';
+      if (formState.perk1 === techniqueName || formState.perk2 === techniqueName || formState.perk3 === techniqueName) return 'square';
+      return 'unknown';
+    };
+    
     const classes = items.classes;
     const abilityOptions = getOptionsForClass('Ability');
     const perk1Options = getOptionsForClass('Perk 1');
@@ -286,7 +412,24 @@ const BuildForm = () => {
         hunter: 'hunterTec',
         assassin: 'assassinTec'
     };
+
+    const classToTechniques = {
+      Samurai: items.samuraiTec,
+      Hunter: items.hunterTec,
+      Assassin: items.assassinTec,
+      Ronin: items.roninTec,
+    };
+    const selectedClass = formState.class;
+    const selectedTechniques = classToTechniques[selectedClass] || [];
+
     
+    console.log(formState
+      // selectedUltimate,
+      // selectedAbility,
+      // selectedPerk1,
+      // selectedPerk2,
+      // selectedPerk3,
+    )
     return (
       <form onSubmit={handleSubmit}>
         <div className="form-group">
@@ -295,40 +438,75 @@ const BuildForm = () => {
             type="text"
             id="name"
             name="name"
+            placeholder="build name"
             value={formState.name}
             onChange={handleChange}
             className="form-control"
           />
         </div>
+        {/* CLASS SELECTOR */}
         {renderFormSelect('Class', 'class', classes, '', 'gear')}
+        
+        {/* <TechniquesContainer techniques={selectedTechniques} /> */}
+        <TechniquesContainer 
+        techniques={selectedTechniques} 
+        onTechniquesChange={handleTechniquesChange} 
+        onLastClickedChange={handleLastClickedChange}
+        formState={formState}
+      />
+
+       {/* Render the last clicked technique and its description */}
+      {lastClicked && (
+        <div className="form-group-description">
+          {/* <label className="form-label">Last Clicked</label> */}
+          <div className="form-gear description">
+            {/* <div className="icon-container"> */}
+            <div className={`icon-container${getImgType(lastClicked) === 'round' ? '-round' : ''}`}>
+              <img
+                src={techniquesToImage[lastClicked]}
+                alt={lastClicked}
+                className="build-image-selected"
+              />
+            </div>
+            <label className="form-description label">
+              {lastClicked.toUpperCase()}
+            </label>
+          </div>
+          <p className="form-description">{getGearDescription(lastClicked, classTechOptions[formState.class.toLowerCase()])}</p>
+        </div>
+      )}
+
+        {/* DISPLAY ULTIMATE */}
+        {/* {techniquesToImage[formState.ultimate] && 
+        <div className="form-label">ULTIMATE</div>
+        }
+{techniquesToImage[formState.ultimate] && 
         <div className="form-group">
         {techniquesToImage[formState.ultimate] && 
-        <div className="icon-container-round">
-        <img
-            src={techniquesToImage[formState.ultimate]}
-            alt={formState.ultimate}
-            className="build-image-selected"
-          />
+          <div className="icon-container-round">
+            <img
+              src={techniquesToImage[formState.ultimate]}
+              alt={formState.ultimate}
+              className="build-image-selected"
+            />
           </div>
-          }
-          <label htmlFor="ultimate" className={`form-label ${techniquesToImage[formState.ultimate] ? 'image' : ''}`}>ULTIMATE</label>
-          <input
-            type="text"
-            id="ultimate"
-            name="ultimate"
-            value={formState.ultimate}
-            onChange={handleChange}
-            className="form-control"
-            readOnly
-          />
+        }
+          <label htmlFor="ultimate" className={`form-label ${techniquesToImage[formState.ultimate] ? 'image' : ''}`}>{formState.ultimate}</label>
           {formState.ultimate && (
-    <p className="form-description">{getUltimateDescription(formState.ultimate)}</p>
-  )}
+          <p className="form-description">{getUltimateDescription(formState.ultimate)}</p>
+          )}
         </div>
-        {renderFormSelect('Ability', 'ability', abilityOptions, classTechOptions[formState.class.toLowerCase()], 'round')}
-        {renderFormSelect('Perk 1', 'perk1', perk1Options, classTechOptions[formState.class.toLowerCase()], 'square')}
-        {renderFormSelect('Perk 2', 'perk2', perk2Options, classTechOptions[formState.class.toLowerCase()], 'square')}
-        {renderFormSelect('Perk 3', 'perk3', perk3Options, classTechOptions[formState.class.toLowerCase()], 'square')}
+} */}
+
+        {/* ABILIY SELECTOR */}
+        {/* {renderFormSelectInfo('Ability', 'ability', abilityOptions, classTechOptions[formState.class.toLowerCase()], 'round')} */}
+
+        {/* TECHNIQUES SELECTOR */}
+        {/* {renderFormSelectInfo('Perk 1', 'perk1', perk1Options, classTechOptions[formState.class.toLowerCase()], 'square')}
+        {renderFormSelectInfo('Perk 2', 'perk2', perk2Options, classTechOptions[formState.class.toLowerCase()], 'square')}
+        {renderFormSelectInfo('Perk 3', 'perk3', perk3Options, classTechOptions[formState.class.toLowerCase()], 'square')} */}
+
+        {/* GEAR SELECTOR */}
         {renderFormSelect('KATANA', 'katana', katanaOptions, 'katana', 'gear')}
         {renderFormSelect('Prop I', 'katana_prop1', katanaPropertyOptions, 'props')}
         {renderFormSelect('Prop II', 'katana_prop2', katanaPropertyOptions, 'props')}
