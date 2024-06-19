@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/gotlegends/static/css/main.866fc227.css",
-    "main.js": "/gotlegends/static/js/main.c58229c6.js",
+    "main.css": "/gotlegends/static/css/main.a6925826.css",
+    "main.js": "/gotlegends/static/js/main.23b0f5c9.js",
     "static/js/453.3cd39940.chunk.js": "/gotlegends/static/js/453.3cd39940.chunk.js",
     "static/media/cure-all.svg": "/gotlegends/static/media/cure-all.f43540cb30a7632dcfafa58d34b0f85f.svg",
     "static/media/quick-regen.svg": "/gotlegends/static/media/quick-regen.deb9bdf9b4e17e3cced7af36df484734.svg",
@@ -119,12 +119,12 @@
     "static/media/shadow-strike.svg": "/gotlegends/static/media/shadow-strike.dd1fa146da1416e9811c21ac0502da0b.svg",
     "index.html": "/gotlegends/index.html",
     "static/media/assassin-wh.svg": "/gotlegends/static/media/assassin-wh.a6f0320981bf1208ae1a27a64488badf.svg",
-    "main.866fc227.css.map": "/gotlegends/static/css/main.866fc227.css.map",
-    "main.c58229c6.js.map": "/gotlegends/static/js/main.c58229c6.js.map",
+    "main.a6925826.css.map": "/gotlegends/static/css/main.a6925826.css.map",
+    "main.23b0f5c9.js.map": "/gotlegends/static/js/main.23b0f5c9.js.map",
     "453.3cd39940.chunk.js.map": "/gotlegends/static/js/453.3cd39940.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.866fc227.css",
-    "static/js/main.c58229c6.js"
+    "static/css/main.a6925826.css",
+    "static/js/main.23b0f5c9.js"
   ]
 }
