@@ -148,6 +148,54 @@ const Home = () => {
     );
   };
   
+  const determinePlacement = (element) => {
+    const rect = element.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
+  
+    if (rect.bottom + 200 > viewportHeight) {
+      // If there's not enough space below, place it above
+      return 'top';
+    }
+    // Otherwise, place it below
+    return 'bottom';
+  };
+
+  const DynamicOverlayTrigger = ({ children, className, build, gearType, getPopoverContent }) => {
+    const [placement, setPlacement] = useState('bottom');
+    const triggerRef = useRef(null);
+  
+    const ultimateORability = ["ultimate", "ability"];
+    const perk = ["perk1", "perk2", "perk3"];
+    const gear = ["katana", "ranged", "charm", "gw1", "gw2"]
+
+    useEffect(() => {
+      if (triggerRef.current) {
+        const newPlacement = determinePlacement(triggerRef.current);
+        setPlacement(newPlacement);
+      }
+    }, []);
+  
+    return (
+      <OverlayTrigger
+        trigger="click"
+        placement={placement}
+        overlay={getPopoverContent(className, build, gearType)}
+        rootClose
+      >
+        <td ref={triggerRef} className={getItemTypeClassName(gearType, build[gearType])}>
+        <div className={ultimateORability.includes(gearType) ? "icon-container-round" : perk.includes(gearType) ? "icon-container" : ""}>
+          <img
+            src={techniquesToImage[build[gearType]]}
+            alt={build[gearType] || `No ${gearType}`}
+            className={ultimateORability.includes(gearType) || perk.includes(gearType) ? "build-image-selected" : "build-image"}
+          />
+        </div>
+        </td>
+      </OverlayTrigger>
+    );
+  };
+
+  
 
   return (
     <div className="content">
@@ -212,7 +260,12 @@ const Home = () => {
                     <tr className="build-tec-row">
                     <td colSpan="5">
                       <div className="build-tec-row-container">
-                      <OverlayTrigger trigger="click" placement="bottom" overlay={getPopoverContent(className, build, 'ultimate')} rootClose>
+                        <DynamicOverlayTrigger className={className} build={build} gearType="ultimate" getPopoverContent={getPopoverContent} />
+                        <DynamicOverlayTrigger className={className} build={build} gearType="ability" getPopoverContent={getPopoverContent} />
+                        <DynamicOverlayTrigger className={className} build={build} gearType="perk1" getPopoverContent={getPopoverContent} />
+                        <DynamicOverlayTrigger className={className} build={build} gearType="perk2" getPopoverContent={getPopoverContent} />
+                        <DynamicOverlayTrigger className={className} build={build} gearType="perk3" getPopoverContent={getPopoverContent} />
+                      {/* <OverlayTrigger trigger="click" placement="bottom" overlay={getPopoverContent(className, build, 'ultimate')} rootClose>
                           <div className="icon-container-round">
                           <img
                                 src={techniquesToImage[build.ultimate]}
@@ -221,8 +274,6 @@ const Home = () => {
                               />
                               </div>
                               </OverlayTrigger>
-                              {/* </td>
-                            <td> */}
                             <OverlayTrigger trigger="click" placement="bottom" overlay={getPopoverContent(className, build, 'ability')} rootClose>
                             <div className="icon-container-round">
                               <img
@@ -232,8 +283,6 @@ const Home = () => {
                               />
                               </div>
                               </OverlayTrigger>
-                            {/* </td>
-                            <td> */}
                             <OverlayTrigger trigger="click" placement="bottom" overlay={getPopoverContent(className, build, 'perk1')} rootClose>
                               <div className="icon-container">
                               <img
@@ -243,8 +292,6 @@ const Home = () => {
                               />
                               </div>
                               </OverlayTrigger>
-                            {/* </td>
-                            <td> */}
                             <OverlayTrigger trigger="click" placement="bottom" overlay={getPopoverContent(className, build, 'perk2')} rootClose>
                             <div className="icon-container">
                               <img
@@ -254,8 +301,6 @@ const Home = () => {
                               />
                               </div>
                               </OverlayTrigger>
-                            {/* </td>
-                            <td> */}
                             <OverlayTrigger trigger="click" placement="bottom" overlay={getPopoverContent(className, build, 'perk3')} rootClose>
                             <div className="icon-container">
                               <img
@@ -264,12 +309,17 @@ const Home = () => {
                                 className="build-image-selected"
                               />
                               </div>
-                              </OverlayTrigger>
+                              </OverlayTrigger> */}
                           </div>
                       </td>
                     </tr>
                     <tr className="build-gear-row">
-                    <OverlayTrigger trigger="click" placement="bottom" overlay={getPopoverContent(className, build, 'katana')} rootClose>
+                    <DynamicOverlayTrigger className={className} build={build} gearType="katana" getPopoverContent={getPopoverContent} />
+                    <DynamicOverlayTrigger className={className} build={build} gearType="ranged" getPopoverContent={getPopoverContent} />
+                    <DynamicOverlayTrigger className={className} build={build} gearType="charm" getPopoverContent={getPopoverContent} />
+                    <DynamicOverlayTrigger className={className} build={build} gearType="gw1" getPopoverContent={getPopoverContent} />
+                    <DynamicOverlayTrigger className={className} build={build} gearType="gw2" getPopoverContent={getPopoverContent} />
+                    {/* <OverlayTrigger trigger="click" placement="bottom" overlay={getPopoverContent(className, build, 'katana')} rootClose>
                       <td className={`pointer ${getItemTypeClassName('katana', build.katana)}`}>
                         <img
                           src={techniquesToImage[build.katana]}
@@ -313,7 +363,7 @@ const Home = () => {
                           className="build-image"
                         />
                       </td>
-                      </OverlayTrigger>
+                      </OverlayTrigger> */}
                     </tr>
                   </React.Fragment>
                 ))}
