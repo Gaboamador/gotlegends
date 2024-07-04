@@ -1,11 +1,11 @@
 import React, { useState, useContext, useEffect, useRef } from "react";
 import '../App.css';
-import {Container, Image, Table, Button, ButtonGroup, ButtonToolbar, Overlay, OverlayTrigger, Popover } from 'react-bootstrap';
+import {Container, Image, Table, Button, ButtonGroup, ButtonToolbar, Overlay, OverlayTrigger, Popover, Collapse } from 'react-bootstrap';
 import Context from "../context";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaVoteYea } from 'react-icons/fa';
-import {BsFillPersonLinesFill, BsReverseLayoutTextWindowReverse, BsCalendarWeek, BsXCircle, BsAward, BsCalendar2Check, BsFillBarChartLineFill} from 'react-icons/bs';
+import { FaAngleDown, FaAnglesDown, FaAngleUp, FaAnglesUp } from "react-icons/fa6";
 // import { participants, participantsChart } from "../data/participantsData";
 import { fetchData } from '../componentes/DataService';
 import items from "../data/data";
@@ -195,6 +195,53 @@ const Home = () => {
     );
   };
 
+  const [openBuilds, setOpenBuilds] = useState({});
+  const [allClassOpen, setAllClassOpen] = useState({});
+  const [allOpen, setAllOpen] = useState(false);
+  // const [allOpen, setAllOpen] = useState({});
+  
+  const toggleBuild = (className, buildIndex) => {
+    const key = `${className}-${buildIndex}`;
+    setOpenBuilds((prevOpenBuilds) => ({
+      ...prevOpenBuilds,
+      [key]: !prevOpenBuilds[key],
+    }));
+  };
+
+  const toggleAllClassBuilds = (className) => {
+    const areAllClassOpen = allClassOpen[className];
+    const newOpenBuilds = {};
+
+    groupedBuilds[className].forEach((_, buildIndex) => {
+      const key = `${className}-${buildIndex}`;
+      newOpenBuilds[key] = !areAllClassOpen;
+    });
+
+    setOpenBuilds((prevOpenBuilds) => ({
+      ...prevOpenBuilds,
+      ...newOpenBuilds,
+    }));
+
+    setAllClassOpen((prevAllClassOpen) => ({
+      ...prevAllClassOpen,
+      [className]: !areAllClassOpen,
+    }));
+  };
+
+  const toggleAllBuilds = () => {
+    const newOpenBuilds = {};
+    Object.keys(groupedBuilds).forEach((classKey) => {
+      groupedBuilds[classKey].forEach((_, buildIndex) => {
+        const key = `${classKey}-${buildIndex}`;
+        newOpenBuilds[key] = !allOpen;
+      });
+    });
+
+    setOpenBuilds(newOpenBuilds);
+    setAllOpen(!allOpen);
+  };
+
+  
   
 
   return (
@@ -203,8 +250,9 @@ const Home = () => {
 <h1 className="build-summary-title">Builds Summary</h1>
 
       <Container className="d-flex justify-content-center toggle-button-group summary">
+        <div className="toolbar-wrapper">
         <ButtonToolbar>
-          <ButtonGroup>
+          <ButtonGroup className="me-2">
             {Object.keys(groupedBuilds).map((className, index) => (
               <Button key={index} onClick={() => handleScrollToClass(className)}>
                 {className}
@@ -212,6 +260,12 @@ const Home = () => {
             ))}
           </ButtonGroup>
         </ButtonToolbar>
+        <ButtonToolbar>
+        <ButtonGroup>
+        <Button onClick={toggleAllBuilds}>{allOpen ? <FaAnglesUp/> : <FaAnglesDown/>}</Button>  
+        </ButtonGroup>
+        </ButtonToolbar>
+        </div>
       </Container>
 
 <Container>
@@ -225,26 +279,37 @@ const Home = () => {
             <h2>{className}</h2>
           </div>
           <div>
-            <h6 className="number"># Builds</h6>
-            <h6 className="number">{groupedBuilds[className].length}</h6>
+            <h6 className="number"># Builds: {groupedBuilds[className].length}</h6>
+            <p></p>
+            <h6 className="number">
+              {allClassOpen[className] ? (
+                <FaAngleUp onClick={() => toggleAllClassBuilds(className)} />
+              ) : (
+                <FaAngleDown onClick={() => toggleAllClassBuilds(className)} />
+              )}
+            </h6>
           </div>
-            
           </div>
           
           
           <div className="responsive-table">
             <Table striped bordered hover className="summary-table">
               <tbody>
-                {groupedBuilds[className].map((build, buildIndex) => (
+                {groupedBuilds[className].map((build, buildIndex) => {
+                  const key = `${className}-${buildIndex}`;
+                  return (
                   <React.Fragment key={buildIndex}>
                     {buildIndex !== 0 && (
                       <tr className="separator-row">
                         <td colSpan="5" className="separator">-----</td>
                       </tr>
                     )}
-                    <tr className="clickable-header-buildName" onClick={() => handleHeaderClick(className, build.name)}>
+                    <tr className="clickable-header-buildName"
+                    onClick={() => toggleBuild(className, buildIndex)}
+                    >
                       <td colSpan="5" className="build-name">{build.name.toUpperCase()}</td>
                     </tr>
+                    <Collapse in={openBuilds[key]}>
                     <tr className="subheader-buildName">
                       <td colSpan="2" className="build-name-sub left">{build.ability}</td>
                       <td className="build-name-sub">
@@ -257,6 +322,8 @@ const Home = () => {
                         {getPerkPosition(className, build.perk3, 'Perk 3')}
                       </td>
                     </tr>
+                    </Collapse>
+                    <Collapse in={openBuilds[key]}>
                     <tr className="build-tec-row">
                     <td colSpan="5">
                       <div className="build-tec-row-container">
@@ -265,168 +332,28 @@ const Home = () => {
                         <DynamicOverlayTrigger className={className} build={build} gearType="perk1" getPopoverContent={getPopoverContent} />
                         <DynamicOverlayTrigger className={className} build={build} gearType="perk2" getPopoverContent={getPopoverContent} />
                         <DynamicOverlayTrigger className={className} build={build} gearType="perk3" getPopoverContent={getPopoverContent} />
-                      {/* <OverlayTrigger trigger="click" placement="bottom" overlay={getPopoverContent(className, build, 'ultimate')} rootClose>
-                          <div className="icon-container-round">
-                          <img
-                                src={techniquesToImage[build.ultimate]}
-                                alt={build.ability}
-                                className="build-image-selected"
-                              />
-                              </div>
-                              </OverlayTrigger>
-                            <OverlayTrigger trigger="click" placement="bottom" overlay={getPopoverContent(className, build, 'ability')} rootClose>
-                            <div className="icon-container-round">
-                              <img
-                                src={techniquesToImage[build.ability]}
-                                alt={build.ultimate}
-                                className="build-image-selected"
-                              />
-                              </div>
-                              </OverlayTrigger>
-                            <OverlayTrigger trigger="click" placement="bottom" overlay={getPopoverContent(className, build, 'perk1')} rootClose>
-                              <div className="icon-container">
-                              <img
-                                src={techniquesToImage[build.perk1]}
-                                alt={build.perk1}
-                                className="build-image-selected"
-                              />
-                              </div>
-                              </OverlayTrigger>
-                            <OverlayTrigger trigger="click" placement="bottom" overlay={getPopoverContent(className, build, 'perk2')} rootClose>
-                            <div className="icon-container">
-                              <img
-                                src={techniquesToImage[build.perk2]}
-                                alt={build.perk2}
-                                className="build-image-selected"
-                              />
-                              </div>
-                              </OverlayTrigger>
-                            <OverlayTrigger trigger="click" placement="bottom" overlay={getPopoverContent(className, build, 'perk3')} rootClose>
-                            <div className="icon-container">
-                              <img
-                                src={techniquesToImage[build.perk3]}
-                                alt={build.perk3}
-                                className="build-image-selected"
-                              />
-                              </div>
-                              </OverlayTrigger> */}
                           </div>
                       </td>
                     </tr>
+                    </Collapse>
+                    <Collapse in={openBuilds[key]}>
                     <tr className="build-gear-row">
                     <DynamicOverlayTrigger className={className} build={build} gearType="katana" getPopoverContent={getPopoverContent} />
                     <DynamicOverlayTrigger className={className} build={build} gearType="ranged" getPopoverContent={getPopoverContent} />
                     <DynamicOverlayTrigger className={className} build={build} gearType="charm" getPopoverContent={getPopoverContent} />
                     <DynamicOverlayTrigger className={className} build={build} gearType="gw1" getPopoverContent={getPopoverContent} />
                     <DynamicOverlayTrigger className={className} build={build} gearType="gw2" getPopoverContent={getPopoverContent} />
-                    {/* <OverlayTrigger trigger="click" placement="bottom" overlay={getPopoverContent(className, build, 'katana')} rootClose>
-                      <td className={`pointer ${getItemTypeClassName('katana', build.katana)}`}>
-                        <img
-                          src={techniquesToImage[build.katana]}
-                          alt={build.katana || 'No Katana'}
-                          className="build-image"
-                        />
-                      </td>
-                      </OverlayTrigger>
-                      <OverlayTrigger trigger="click" placement="bottom" overlay={getPopoverContent(className, build, 'ranged')} rootClose>
-                      <td className={`pointer ${getItemTypeClassName('ranged', build.ranged)}`}>
-                        <img
-                          src={techniquesToImage[build.ranged]}
-                          alt={build.ranged || 'No Ranged'}
-                          className="build-image"
-                        />
-                      </td>
-                      </OverlayTrigger>
-                      <OverlayTrigger trigger="click" placement="bottom" overlay={getPopoverContent(className, build, 'charm')} rootClose>
-                      <td className={`pointer ${getItemTypeClassName('charm', build.charm)}`}>
-                        <img
-                          src={techniquesToImage[build.charm]}
-                          alt={build.charm || 'No Charm'}
-                          className="build-image"
-                        />
-                      </td>
-                      </OverlayTrigger>
-                      <OverlayTrigger trigger="click" placement="bottom" overlay={getPopoverContent(className, build, 'gw1')} rootClose>
-                      <td className={`pointer ${getItemTypeClassName('gw1', build.gw1)}`}>
-                        <img
-                          src={techniquesToImage[build.gw1]}
-                          alt={build.gw1 || 'No GW1'}
-                          className="build-image"
-                        />
-                      </td>
-                      </OverlayTrigger>
-                      <OverlayTrigger trigger="click" placement="bottom" overlay={getPopoverContent(className, build, 'gw2')} rootClose>
-                      <td className={`pointer ${getItemTypeClassName('gw2', build.gw2)}`}>
-                        <img
-                          src={techniquesToImage[build.gw2]}
-                          alt={build.gw2 || 'No GW2'}
-                          className="build-image"
-                        />
-                      </td>
-                      </OverlayTrigger> */}
                     </tr>
+                    </Collapse>
                   </React.Fragment>
-                ))}
+                  );
+              })}
               </tbody>
             </Table>
           </div>
         </div>
       ))}
     </Container>
-      
-      {/* <Container>
-        <h1 className="build-creator-title">Builds Summary</h1>
-        {Object.keys(groupedBuilds).map((className, classIndex) => (
-          <div key={classIndex}>
-            <h2>Class: {className}</h2>
-            <p>Number of Builds: {groupedBuilds[className].length}</p>
-            <div className="responsive-table">
-            <Table striped bordered hover>
-              <tbody>
-                {groupedBuilds[className].map((build, buildIndex) => (
-                  <React.Fragment key={buildIndex}>
-                    {buildIndex !== 0 && (
-                        <tr className="separator-row">
-                          <td colSpan="5" className="separator">-----</td>
-                        </tr>
-                      )}
-                    <tr>
-                      <td colSpan="5" className="build-name">{build.name}</td>
-                    </tr>
-                    <tr>
-                      <td colSpan="5">{build.ability}</td>
-                    </tr>
-                    <tr>
-                      <td>{build.perk1}</td>
-                      <td>{build.perk2}</td>
-                      <td>{build.perk3}</td>
-                      <td colSpan="2"></td>
-                      </tr>
-                    <tr>
-                    <td className={getItemTypeClassName('katana', build.katana)}>
-                        {build.katana || 'No Katana'}
-                      </td>
-                      <td className={getItemTypeClassName('ranged', build.ranged)}>
-                        {build.ranged || 'No Ranged'}
-                      </td>
-                      <td className={getItemTypeClassName('charm', build.charm)}>
-                        {build.charm || 'No Charm'}
-                      </td>
-                      <td className={getItemTypeClassName('gw1', build.gw1)}>
-                        {build.gw1 || 'No GW1'}
-                      </td>
-                      <td className={getItemTypeClassName('gw2', build.gw2)}>
-                        {build.gw2 || 'No GW2'}
-                      </td>
-                    </tr>
-                  </React.Fragment>
-                ))}
-              </tbody>
-            </Table>
-            </div>
-          </div>
-        ))}
-      </Container> */}
     </div>
   );
 };

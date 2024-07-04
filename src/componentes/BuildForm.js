@@ -42,7 +42,26 @@ const BuildForm = () => {
       gw2_perk2: ''
     };
 
-    const [formState, setFormState] = useState(initialFormState);
+    // const [formState, setFormState] = useState(initialFormState);
+    const [formState, setFormState] = useState(() => {
+      const savedFormState = sessionStorage.getItem('formState');
+      return savedFormState ? JSON.parse(savedFormState) : initialFormState;
+    });
+  
+    useEffect(() => {
+      sessionStorage.setItem('formState', JSON.stringify(formState));
+    }, [formState]);
+  
+    const handleReset = () => {
+      const confirmReset = window.confirm('Are you sure you want to reset the build?');
+      if (!confirmReset) {
+        return;
+      }
+      setFormState(initialFormState);
+      sessionStorage.removeItem('formState');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
     const [currentClass, setCurrentClass] = useState('');
     const [lastClicked, setLastClicked] = useState(null);
 
@@ -114,35 +133,58 @@ const BuildForm = () => {
       })) || [];
     };
 
-    const getPropertyOptions = (gearType) => {
-        return items.props?.filter(prop => {
-          const gearList = prop.gear.split(', ');
-          const match = gearList.some(gear => {
-            const normalizedGearType = gearType.charAt(0).toUpperCase() + gearType.slice(1);
-            const result = gear === gearType ||
-              gear === `All ${normalizedGearType}s` ||
-              gear === normalizedGearType ||
-              (items[gearType] && items[gearType].some(item => item.name === gear));
-            return result;
-          });
-          return match;
+    // const getPropertyOptions = (gearType) => {
+    //     return items.props?.filter(prop => {
+    //       const gearList = prop.gear.split(', ');
+    //       const match = gearList.some(gear => {
+    //         const normalizedGearType = gearType.charAt(0).toUpperCase() + gearType.slice(1);
+    //         const result = gear === gearType ||
+    //           gear === `All ${normalizedGearType}s` ||
+    //           gear === normalizedGearType ||
+    //           (items[gearType] && items[gearType].some(item => item.name === gear));
+    //         return result;
+    //       });
+    //       return match;
+    //     }) || [];
+    //   };
+
+    const getPropertyOptions = (selectedGearName, gearType) => {
+      const normalizedGearType = gearType.charAt(0).toUpperCase() + gearType.slice(1);
+      return items.props?.filter(prop => {
+        const gearList = prop.gear.split(', ');
+        return gearList.some(gear => 
+          gear === selectedGearName || 
+          gear === `All ${normalizedGearType}s`
+        );
+      }) || [];
+    };
+      
+      // const getPerkOptions = (gearType) => {
+      //   return items.perks?.filter(perk => {
+      //     const gearList = perk.gear.split(', ');
+      //     const match = gearList.some(gear => {
+      //       const normalizedGearType = gearType.charAt(0).toUpperCase() + gearType.slice(1);
+      //       const result = gear === gearType ||
+      //         gear === `All ${normalizedGearType}s` ||
+      //         gear === normalizedGearType ||
+      //         (items[gearType] && items[gearType].some(item => item.name === gear));
+      //       return result;
+      //     });
+      //     return match;
+      //   }) || [];
+      // };
+
+      const getPerkOptions = (selectedGearName, gearType) => {
+        const normalizedGearType = gearType.charAt(0).toUpperCase() + gearType.slice(1);
+        return items.perks?.filter(perk => {
+          const gearList = perk.gear.split(', ');
+          return gearList.some(gear => 
+            gear === selectedGearName || 
+            gear === `All ${normalizedGearType}s`
+          );
         }) || [];
       };
       
-      const getPerkOptions = (gearType) => {
-        return items.perks?.filter(perk => {
-          const gearList = perk.gear.split(', ');
-          const match = gearList.some(gear => {
-            const normalizedGearType = gearType.charAt(0).toUpperCase() + gearType.slice(1);
-            const result = gear === gearType ||
-              gear === `All ${normalizedGearType}s` ||
-              gear === normalizedGearType ||
-              (items[gearType] && items[gearType].some(item => item.name === gear));
-            return result;
-          });
-          return match;
-        }) || [];
-      };
       
       const getItemTypeClassName = (property, itemName) => {
         const item = items[property]?.find(item => item.name === itemName);
@@ -259,7 +301,7 @@ const BuildForm = () => {
                 itemType === 'props' ? 'props' :
                   itemType === 'perks' ? 'perks' : ''}`}
           >
-            <option value=""></option>
+            <option value="">-</option>
             {itemType === 'perks' ?
               renderSelectOptions(options).map((option, index) => (
                 <option key={index} value={option.props.value}>
@@ -396,16 +438,26 @@ const BuildForm = () => {
     const charmOptions = getGearOptions('charm');
     const gw1Options = getGearOptions('gw1');
     const gw2Options = getGearOptions('gw2');
-    const katanaPropertyOptions = getPropertyOptions('katana');
-    const rangedPropertyOptions = getPropertyOptions('ranged');
-    const charmPropertyOptions = getPropertyOptions('charm');
-    const gw1PropertyOptions = getPropertyOptions('gw1');
-    const gw2PropertyOptions = getPropertyOptions('gw2');
-    const katanaPerkOptions = getPerkOptions('katana');
-    const rangedPerkOptions = getPerkOptions('ranged');
-    const charmPerkOptions = getPerkOptions('charm');
-    const gw1PerkOptions = getPerkOptions('gw1');
-    const gw2PerkOptions = getPerkOptions('gw2');
+    // const katanaPropertyOptions = getPropertyOptions('katana');
+    // const rangedPropertyOptions = getPropertyOptions('ranged');
+    // const charmPropertyOptions = getPropertyOptions('charm');
+    // const gw1PropertyOptions = getPropertyOptions('gw1');
+    // const gw2PropertyOptions = getPropertyOptions('gw2');
+    const katanaPropertyOptions = getPropertyOptions(formState.katana, 'katana');
+    const rangedPropertyOptions = getPropertyOptions(formState.ranged, 'ranged');
+    const charmPropertyOptions = getPropertyOptions(formState.charm, 'charm');
+    const gw1PropertyOptions = getPropertyOptions(formState.gw1, 'gw1');
+    const gw2PropertyOptions = getPropertyOptions(formState.gw2, 'gw2');
+    // const katanaPerkOptions = getPerkOptions('katana');
+    // const rangedPerkOptions = getPerkOptions('ranged');
+    // const charmPerkOptions = getPerkOptions('charm');
+    // const gw1PerkOptions = getPerkOptions('gw1');
+    // const gw2PerkOptions = getPerkOptions('gw2');
+    const katanaPerkOptions = getPerkOptions(formState.katana, 'katana');
+    const rangedPerkOptions = getPerkOptions(formState.ranged, 'ranged');
+    const charmPerkOptions = getPerkOptions(formState.charm, 'charm');
+    const gw1PerkOptions = getPerkOptions(formState.gw1, 'gw1');
+    const gw2PerkOptions = getPerkOptions(formState.gw2, 'gw2');
     const classTechOptions = {
         samurai: 'samuraiTec',
         ronin: 'roninTec',
@@ -422,14 +474,6 @@ const BuildForm = () => {
     const selectedClass = formState.class;
     const selectedTechniques = classToTechniques[selectedClass] || [];
 
-    
-    console.log(formState
-      // selectedUltimate,
-      // selectedAbility,
-      // selectedPerk1,
-      // selectedPerk2,
-      // selectedPerk3,
-    )
     return (
       <form onSubmit={handleSubmit}>
         <div className="form-group">
@@ -533,10 +577,11 @@ const BuildForm = () => {
         {renderFormSelect('Perk I', 'gw2_perk1', gw2PerkOptions, 'perks')}
         {renderFormSelect('Perk II', 'gw2_perk2', gw2PerkOptions, 'perks')}
         
-        <Container className="d-flex justify-content-center toggle-button-group">
+        <Container className="d-flex justify-content-space-between toggle-button-group">
             <Button type="submit" className="custom-button">
             Add Build
             </Button>
+            <Button className="custom-button erase" onClick={handleReset}>Reset Build</Button>
         </Container>
       </form>
     );
